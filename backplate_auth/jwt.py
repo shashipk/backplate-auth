@@ -15,9 +15,8 @@ class JWT:
             Defaults to config key "SECRET_KEY".
         """
 
-        config = current_app.config
-        self.secret = secret or config.get('SECRET_KEY', 'secret')
-        self.life = life or config.get('AUTH_TOKEN_LIFE', timedelta(weeks=1))
+        self.secret = secret
+        self.life = life
 
     def create(self, payload):
         """
@@ -25,8 +24,13 @@ class JWT:
             Dictionary for token payload.
         """
 
-        payload['exp'] = datetime.utcnow() + self.life
-        return jwt.encode(payload, self.secret, algorithm='HS256').decode()
+        # defaults
+        config = current_app.config
+        secret = self.secret or config.get('SECRET_KEY') or 'secret'
+        life = self.life or config.get('AUTH_TOKEN_LIFE') or timedelta(weeks=1)
+
+        payload['exp'] = str(datetime.utcnow() + life)
+        return jwt.encode(payload, secret, algorithm='HS256').decode()
 
     def parse(self, token):
         """
@@ -34,8 +38,12 @@ class JWT:
             String of JWT to decode.
         """
 
+        # defaults
+        config = current_app.config
+        secret = self.secret or config.get('SECRET_KEY') or 'secret'
+
         try:
-            return jwt.decode(token, self.secret, algorithms=['HS256'])
+            return jwt.decode(token, secret, algorithms=['HS256'])
         except jwt.exceptions.InvalidTokenError:
             return None
 
