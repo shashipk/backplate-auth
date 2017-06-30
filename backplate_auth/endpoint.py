@@ -2,7 +2,6 @@
 from webargs.flaskparser import use_args
 from flask_restful import Resource
 
-
 from .error import AuthTokenError
 
 def create_auth_endpoint(AuthFlow):
@@ -16,7 +15,8 @@ def create_auth_endpoint(AuthFlow):
             user_id = None
             token = args.get('token')
             if token:
-                flow.check_token()
+                flow.check_token(token)
+                user_id = flow.resolve_token_user_id(token)
             else:
                 user_id = flow.resolve_request_user_id()
                 if not user_id:
