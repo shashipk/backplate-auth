@@ -29,7 +29,7 @@ class JWT:
         secret = self.secret or config.get('SECRET_KEY') or 'secret'
         life = self.life or config.get('AUTH_TOKEN_LIFE') or timedelta(weeks=1)
 
-        payload['exp'] = str(datetime.utcnow() + life)
+        payload['exp'] = datetime.utcnow() + life
         return jwt.encode(payload, secret, algorithm='HS256').decode()
 
     def parse(self, token):

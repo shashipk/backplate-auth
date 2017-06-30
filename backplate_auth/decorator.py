@@ -2,19 +2,19 @@
 from functools import wraps
 from flask import request, abort, g
 
-def create_auth_decorator(AuthFlow, ignored_endpoints=[]):
+def create_auth_decorator(AuthFlow, whitelist=[]):
 
     flow = AuthFlow
 
-    def check_ignored_endpoint(endpoint):
+    def check_ignored_endpoint(target):
         def trim_api_name_endpoint(endpoint):
             endpoint_parts = endpoint.split('.')
             if len(endpoint_parts) == 1:
                 return endpoint
             return ''.join(endpoint_parts[1:])
 
-        request_endpoint = trim_api_name_endpoint()
-        for endpoint in ignored_endpoints:
+        request_endpoint = trim_api_name_endpoint(target)
+        for endpoint in whitelist:
             if request_endpoint.startswith(endpoint):
                 return True
 
@@ -31,10 +31,13 @@ def create_auth_decorator(AuthFlow, ignored_endpoints=[]):
             token = flow.resolve_request_token()
 
             # validate the token,
-            if flow.check_token(token):
-                user_id = flow.resolve_token_user_id(token)
-                g.user = flow.resolve_user_id(user_id)
-                return f(*args, **kwargs)
+            try:
+                if flow.check_token(token):
+                    user_id = flow.resolve_token_user_id(token)
+                    g.user = flow.resolve_user_id(user_id)
+                    return f(*args, **kwargs)
+            except:
+                pass
 
             # 401 auth failed
             return abort(401)

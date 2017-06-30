@@ -80,7 +80,7 @@ class AuthFlowBase:
         Return a user id from the given token.
         Return None will cause a validation error.
         """
-        payload = self.resolve_token_payload() or {}
+        payload = self.resolve_token_payload(token) or {}
         user_id = payload.get('uid')
         return user_id
 

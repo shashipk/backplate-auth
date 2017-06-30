@@ -18,7 +18,7 @@ def create_auth_endpoint(AuthFlow):
             if token:
                 flow.check_token()
             else:
-                user_id = flow.resolve_user_id()
+                user_id = flow.resolve_request_user_id()
                 if not user_id:
                     raise AuthTokenError("Could not resolve user from request.")
 
