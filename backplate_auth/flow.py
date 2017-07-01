@@ -99,24 +99,24 @@ class AuthFlowBase:
         # token - validity check
         payload = self.resolve_token_payload(token)
         if not payload:
-            # raise AuthTokenError("Token invalid.")
-            raise AuthInvalidTokenError
+            raise AuthInvalidTokenError(
+                "Token invalid.")
 
         # token - payload: uid field check
         user_id = self.resolve_token_user_id(token)
         if not user_id:
-            # raise AuthTokenError("Token 'uid' missing from payload.")
-            raise AuthInvalidTokenPayloadError
+            raise AuthInvalidTokenPayloadError(
+                "Token 'uid' missing from payload.")
 
         # token - payload: custom check
         if not self.check_token_payload(payload):
-            # raise AuthTokenError("Payload validation error.")
-            raise AuthInvalidTokenPayloadError
+            raise AuthInvalidTokenPayloadError(
+                "Payload validation error.")
 
         # system - user check
         if not self.check_user_id(user_id):
-            # raise AuthTokenError("Token 'uid' is invalid user.")
-            raise AuthInvalidTokenUserError
+            raise AuthInvalidTokenUserError(
+                "Token 'uid' is invalid user.")
 
         return True
 

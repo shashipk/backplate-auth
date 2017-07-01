@@ -39,7 +39,8 @@ def create_auth_decorator(AuthFlow, whitelist=[]):
                     g.user = flow.resolve_user_id(user_id)
                     return f(*args, **kwargs)
             except AuthError:
-                raise AuthAccessError
+                raise AuthAccessError(
+                    "The provided token has expired or is otherwise invalid.")
             except Exception as e:
                 raise e
 

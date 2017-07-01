@@ -2,26 +2,30 @@
 class AuthError(Exception):
     pass
 
-class AuthInvalidTokenError(AuthError):
-    pass
-
-class AuthInvalidTokenPayloadError(AuthError):
-    pass
-
-class AuthInvalidTokenUserError(AuthError):
-    pass
-
-class AuthResolveRequestUserError(AuthError):
-    pass
-
 class AuthAccessError(AuthError):
+    pass
+
+class AuthValidationError(AuthError):
+    pass
+
+class AuthInvalidTokenError(AuthValidationError):
+    pass
+
+class AuthInvalidTokenPayloadError(AuthValidationError):
+    pass
+
+class AuthInvalidTokenUserError(AuthValidationError):
+    pass
+
+class AuthResolveRequestUserError(AuthValidationError):
     pass
 
 __all__ = [
     'AuthError',
+    'AuthAccessError',
+    'AuthValidationError',
     'AuthInvalidTokenError',
     'AuthInvalidTokenPayloadError',
     'AuthInvalidTokenUserError',
-    'AuthResolveRequestUserError',
-    'AuthAccessError'
+    'AuthResolveRequestUserError'
 ]
