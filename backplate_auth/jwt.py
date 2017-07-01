@@ -42,6 +42,10 @@ class JWT:
         config = current_app.config
         secret = self.secret or config.get('SECRET_KEY') or 'secret'
 
+        if not token:
+            raise jwt.exceptions.InvalidTokenError(
+                "A valid token is required.")
+
         try:
             return jwt.decode(token, secret, algorithms=['HS256'])
         except Exception as e:
