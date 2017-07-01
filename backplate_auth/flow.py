@@ -40,16 +40,6 @@ class AuthFlowBase:
 
     # Optional overrides
 
-    def resolve_request_token(self):
-        """
-        Optional override.
-        Return token from the request object.
-        Returning None will cause an validation error.
-        """
-        token_header = request.headers.get('Authorization')
-        token_arg = request.args.get('token')
-        return token_header or token_arg
-
     def create_token_payload(self, user_id):
         """
         Optional override.
@@ -84,6 +74,16 @@ class AuthFlowBase:
         user_id = payload.get('uid')
         return user_id
 
+    def resolve_request_token(self):
+        """
+        Optional override.
+        Return token from the request object.
+        Returning None will cause an validation error.
+        """
+        token_header = request.headers.get('Authorization')
+        token_arg = request.args.get('token')
+        return token_header or token_arg
+
     # Advanced optional overrides
 
     def check_token(self, token):
@@ -92,23 +92,27 @@ class AuthFlowBase:
         Returns True after passing all checks, otherwise raises.
         """
 
-        # check token validity
+        # token - validity check
         payload = self.resolve_token_payload(token)
         if not payload:
-            raise AuthTokenError("Token invalid.")
+            # raise AuthTokenError("Token invalid.")
+            raise InvalidTokenError
 
-        # check user id in token
+        # token - payload: uid field check
         user_id = self.resolve_token_user_id(token)
         if not user_id:
-            raise AuthTokenError("Token 'uid' missing from payload.")
+            # raise AuthTokenError("Token 'uid' missing from payload.")
+            raise InvalidTokenPayloadError
 
-        # check user id in app
-        if not self.check_user_id(user_id):
-            raise AuthTokenError("Token 'uid' is invalid user.")
-
-        # custom payload checks on token
+        # token - payload: custom check
         if not self.check_token_payload(payload):
-            raise AuthTokenError("Payload validation error.")
+            # raise AuthTokenError("Payload validation error.")
+            raise InvalidTokenPayloadError
+
+        # system - user check
+        if not self.check_user_id(user_id):
+            # raise AuthTokenError("Token 'uid' is invalid user.")
+            raise InvalidTokenUserError
 
         return True
 
