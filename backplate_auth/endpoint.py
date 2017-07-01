@@ -16,15 +16,13 @@ def create_auth_endpoint(AuthFlow):
             token = args.get('token')
             if token:
                 flow.check_token(token)
-                user_id = flow.resolve_token_user_id(token)
+                token = flow.renew_token(token)
             else:
                 user_id = flow.resolve_request_user_id()
                 if not user_id:
                     raise AuthResolveRequestUserError(
                         "Could not resolve user from request")
-
-            payload = flow.create_token_payload(user_id)
-            token = flow.jwt.create(payload)
+                token = flow.new_token(user_id)
 
             return {'token': token}
 

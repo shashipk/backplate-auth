@@ -36,6 +36,24 @@ class AuthTokenFlowBase:
 
     # Optional overrides
 
+    def new_token(self, user_id):
+        """
+        Optional override.
+        Return token from result of create_token_payload.
+        Returning anything else will cause a token creation error.
+        """
+        payload = self.create_token_payload(user_id)
+        return self.jwt.create(payload)
+
+    def renew_token(self, token):
+        """
+        Optional override.
+        Return token from result of get_token_payload.
+        Returning anything else will cause a token creation error.
+        """
+        payload = self.get_token_payload(token)
+        return self.jwt.create(payload)
+
     def create_token_payload(self, user_id):
         """
         Optional override.
