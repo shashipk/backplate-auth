@@ -3,7 +3,11 @@ from flask import request
 from webargs import fields
 
 from .jwt import JWT
-from .error import AuthTokenError
+from .errors import (
+    InvalidTokenError,
+    InvalidTokenPayloadError,
+    InvalidTokenUserError
+)
 
 class AuthFlowBase:
     jwt_args = {}

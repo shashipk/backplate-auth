@@ -2,7 +2,7 @@
 from webargs.flaskparser import use_args
 from flask_restful import Resource
 
-from .error import AuthTokenError
+from .errors import AuthResolveRequestUserError
 
 def create_auth_endpoint(AuthFlow):
 
@@ -20,7 +20,7 @@ def create_auth_endpoint(AuthFlow):
             else:
                 user_id = flow.resolve_request_user_id()
                 if not user_id:
-                    raise AuthTokenError("Could not resolve user from request.")
+                    raise AuthResolveRequestUserError
 
             payload = flow.create_token_payload(user_id)
             token = flow.jwt.create(payload)

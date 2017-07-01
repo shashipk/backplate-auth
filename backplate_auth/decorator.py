@@ -2,6 +2,8 @@
 from functools import wraps
 from flask import request, abort, g
 
+from .errors import AuthError, AuthAccessError
+
 def create_auth_decorator(AuthFlow, whitelist=[]):
 
     flow = AuthFlow
@@ -30,16 +32,17 @@ def create_auth_decorator(AuthFlow, whitelist=[]):
             # get token from header or request parameter
             token = flow.resolve_request_token()
 
-            # validate the token,
+            # validate the token
             try:
                 if flow.check_token(token):
                     user_id = flow.resolve_token_user_id(token)
                     g.user = flow.resolve_user_id(user_id)
                     return f(*args, **kwargs)
-            except:
-                pass
+            except AuthError:
+                raise AuthAccessError
+            except Exception as e:
+                raise e
 
-            # 401 auth failed
             return abort(401)
 
         return wrapped
