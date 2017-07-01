@@ -2,7 +2,7 @@
 from functools import wraps
 from flask import request, abort, g
 
-from .errors import AuthError, AuthAccessError
+from .exceptions import AuthError, AuthAccessError
 
 def create_auth_decorator(AuthFlow, whitelist=[]):
 

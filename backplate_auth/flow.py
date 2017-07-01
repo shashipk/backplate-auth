@@ -3,10 +3,10 @@ from flask import request
 from webargs import fields
 
 from .jwt import JWT
-from .errors import (
-    InvalidTokenError,
-    InvalidTokenPayloadError,
-    InvalidTokenUserError
+from .exceptions import (
+    AuthInvalidTokenError,
+    AuthInvalidTokenPayloadError,
+    AuthInvalidTokenUserError
 )
 
 class AuthFlowBase:
@@ -100,23 +100,23 @@ class AuthFlowBase:
         payload = self.resolve_token_payload(token)
         if not payload:
             # raise AuthTokenError("Token invalid.")
-            raise InvalidTokenError
+            raise AuthInvalidTokenError
 
         # token - payload: uid field check
         user_id = self.resolve_token_user_id(token)
         if not user_id:
             # raise AuthTokenError("Token 'uid' missing from payload.")
-            raise InvalidTokenPayloadError
+            raise AuthInvalidTokenPayloadError
 
         # token - payload: custom check
         if not self.check_token_payload(payload):
             # raise AuthTokenError("Payload validation error.")
-            raise InvalidTokenPayloadError
+            raise AuthInvalidTokenPayloadError
 
         # system - user check
         if not self.check_user_id(user_id):
             # raise AuthTokenError("Token 'uid' is invalid user.")
-            raise InvalidTokenUserError
+            raise AuthInvalidTokenUserError
 
         return True
 

@@ -2,7 +2,7 @@
 from webargs.flaskparser import use_args
 from flask_restful import Resource
 
-from .errors import AuthResolveRequestUserError
+from .exceptions import AuthResolveRequestUserError
 
 def create_auth_endpoint(AuthFlow):
 

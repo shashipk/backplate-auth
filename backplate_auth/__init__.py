@@ -1,12 +1,12 @@
 
-from .decorator import create_auth_decorator
-from .endpoint import create_auth_endpoint
 from .flow import AuthFlowBase
-from .error import AuthTokenError
+from .endpoint import create_auth_endpoint
+from .decorator import create_auth_decorator
+from . import exceptions
 
 __all__ = [
+    'AuthFlowBase',
     'create_auth_endpoint',
     'create_auth_decorator',
-    'AuthFlowBase',
-    'AuthTokenError'
+    'exceptions'
 ]
