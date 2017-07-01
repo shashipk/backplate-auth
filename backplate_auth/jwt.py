@@ -44,7 +44,10 @@ class JWT:
 
         try:
             return jwt.decode(token, secret, algorithms=['HS256'])
-        except jwt.exceptions.InvalidTokenError:
-            return None
+        except Exception as e:
+            if type(e) == jwt.exceptions.DecodeError:
+                raise jwt.exceptions.InvalidTokenError(
+                    "Malformed token signature.")
+            raise e
 
 __all__ = ['JWT']

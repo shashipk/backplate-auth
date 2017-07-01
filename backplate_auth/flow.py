@@ -9,7 +9,7 @@ from .exceptions import (
     AuthInvalidTokenUserError
 )
 
-class AuthFlowBase:
+class AuthTokenFlowBase:
     jwt_args = {}
     endpoint_args = {'token': fields.String()}
 
@@ -22,15 +22,7 @@ class AuthFlowBase:
         """
         Required override!
         Return a user id from the request object.
-        Returning None will cause an validation error.
-        """
-        raise NotImplementedError
-
-    def check_user_id(self, user_id):
-        """
-        Required override!
-        Return a boolean after checking user_id with database.
-        Returning False will cause an validation error.
+        Returning None will cause a validation error.
         """
         raise NotImplementedError
 
@@ -38,7 +30,7 @@ class AuthFlowBase:
         """
         Required override!
         Return an object that represents the user from database user_id.
-        Returning None may result in errors.
+        Returning None will cause a validation error.
         """
         raise NotImplementedError
 
@@ -48,6 +40,7 @@ class AuthFlowBase:
         """
         Optional override.
         Return a dictionary containing at least the 'uid' of user.
+        Returning anything else will cause a token creation error.
         """
         return {'uid': user_id}
 
@@ -55,34 +48,37 @@ class AuthFlowBase:
         """
         Optional override.
         Return a boolean after running additional validation checks.
-        Returning False will cause an validation error.
+        Returning False will cause a validation error.
         """
         return True
 
-    def resolve_token_payload(self, token):
+    def get_token_payload(self, token):
         """
         Optional override.
         Return a dictionary from the given token payload.
-        Return None will cause a validation error.
+        Returning None will cause a validation error.
         """
-        payload = self.jwt.parse(token)
+        try:
+            payload = self.jwt.parse(token)
+        except Exception as e:
+            raise AuthInvalidTokenError(str(e))
         return payload
 
-    def resolve_token_user_id(self, token):
+    def get_token_user_id(self, token):
         """
         Optional override.
         Return a user id from the given token.
-        Return None will cause a validation error.
+        Returning None will cause a validation error.
         """
-        payload = self.resolve_token_payload(token) or {}
+        payload = self.get_token_payload(token) or {}
         user_id = payload.get('uid')
         return user_id
 
-    def resolve_request_token(self):
+    def get_request_token(self):
         """
         Optional override.
         Return token from the request object.
-        Returning None will cause an validation error.
+        Returning None will cause a validation error.
         """
         token_header = request.headers.get('Authorization')
         token_arg = request.args.get('token')
@@ -92,32 +88,33 @@ class AuthFlowBase:
 
     def check_token(self, token):
         """
-        Advanced/critical override.
+        Advanced override.
         Returns True after passing all checks, otherwise raises.
+        Returning False will cause a validation error.
         """
 
         # token - validity check
-        payload = self.resolve_token_payload(token)
+        payload = self.get_token_payload(token)
         if not payload:
             raise AuthInvalidTokenError(
-                "Token invalid.")
+                "Token payload missing")
 
         # token - payload: uid field check
-        user_id = self.resolve_token_user_id(token)
+        user_id = self.get_token_user_id(token)
         if not user_id:
             raise AuthInvalidTokenPayloadError(
-                "Token 'uid' missing from payload.")
+                "Token 'uid' missing from payload")
 
         # token - payload: custom check
         if not self.check_token_payload(payload):
             raise AuthInvalidTokenPayloadError(
-                "Payload validation error.")
+                "Token payload validation error")
 
         # system - user check
-        if not self.check_user_id(user_id):
+        if not self.resolve_user_id(user_id):
             raise AuthInvalidTokenUserError(
-                "Token 'uid' is invalid user.")
+                "Token 'uid' is invalid user")
 
         return True
 
-__all__ = ['AuthFlowBase']
+__all__ = ['AuthTokenFlowBase']

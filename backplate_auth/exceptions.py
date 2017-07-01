@@ -20,6 +20,9 @@ class AuthInvalidTokenUserError(AuthValidationError):
 class AuthResolveRequestUserError(AuthValidationError):
     pass
 
+class AuthInvalidSessionError(AuthValidationError):
+    pass
+
 __all__ = [
     'AuthError',
     'AuthAccessError',
@@ -27,5 +30,6 @@ __all__ = [
     'AuthInvalidTokenError',
     'AuthInvalidTokenPayloadError',
     'AuthInvalidTokenUserError',
-    'AuthResolveRequestUserError'
+    'AuthResolveRequestUserError',
+    'AuthInvalidSessionError'
 ]

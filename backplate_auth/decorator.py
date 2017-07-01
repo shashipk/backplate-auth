@@ -30,17 +30,16 @@ def create_auth_decorator(AuthFlow, whitelist=[]):
                 return f(*args, **kwargs)
 
             # get token from header or request parameter
-            token = flow.resolve_request_token()
+            token = flow.get_request_token()
 
             # validate the token
             try:
                 if flow.check_token(token):
-                    user_id = flow.resolve_token_user_id(token)
+                    user_id = flow.get_token_user_id(token)
                     g.user = flow.resolve_user_id(user_id)
                     return f(*args, **kwargs)
-            except AuthError:
-                raise AuthAccessError(
-                    "The provided token has expired or is otherwise invalid.")
+            except AuthError as e:
+                raise AuthAccessError(str(e))
             except Exception as e:
                 raise e
 
