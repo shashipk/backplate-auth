@@ -119,7 +119,7 @@ class AuthTokenFlowBase:
 
         # token - payload: uid field check
         user_id = self.get_token_user_id(token)
-        if not user_id:
+        if user_id is None:
             raise AuthInvalidTokenPayloadError(
                 "Token 'uid' missing from payload")
 
