@@ -107,7 +107,7 @@ class AuthTokenFlowBase:
     def check_token(self, token):
         """
         Advanced override.
-        Returns True after passing all checks, otherwise raises.
+        Returns True after passing all checks, otherwise raises exceptions.
         Returning False will cause a validation error.
         """
 

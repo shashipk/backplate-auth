@@ -10,7 +10,6 @@ def create_session(user_id):
         sessions[user_id] = [session]
     else:
         sessions[user_id].append(session)
-    print(sessions)
     return session
 
 def remove_session(session):
@@ -21,9 +20,9 @@ def remove_session(session):
 
 class AuthTokenSessions(AuthTokenSessionsBase):
     def check_session(self, session, user_id):
-        if session not in sessions.get(user_id, []):
-            return False
-        return True
+        if session in sessions.get(user_id, []):
+            return True
+        return False
 
     def get_session(self, user_id):
         return create_session(user_id)

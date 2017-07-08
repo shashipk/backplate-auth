@@ -4,9 +4,9 @@ from flask import request, abort, g
 
 from .exceptions import AuthError, AuthAccessError
 
-def create_auth_decorator(AuthFlow, whitelist=[]):
+def create_auth_decorator(AuthTokenFlow, whitelist=[]):
 
-    flow = AuthFlow
+    flow = AuthTokenFlow
 
     def check_ignored_endpoint(target):
         def trim_api_name_endpoint(endpoint):

@@ -4,9 +4,9 @@ from flask_restful import Resource
 
 from .exceptions import AuthResolveRequestUserError
 
-def create_auth_endpoint(AuthFlow):
+def create_auth_endpoint(AuthTokenFlow):
 
-    flow = AuthFlow
+    flow = AuthTokenFlow
 
     class AuthEndpoint(Resource):
 
