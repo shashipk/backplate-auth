@@ -15,14 +15,14 @@ from backplate_auth import AuthTokenFlowBase
 
 ### Required Overrides
 
-#### `check_session(self, session:SSN, user_id:UID) => boolean`
+#### `check_session(self, session: SSN, user_id: UID) => boolean`
 
 ```
 Return boolean after checking session with database.
 Returning False will cause a validation error.
 ```
 
-#### `get_session(self, user_id:UID) => SSN`
+#### `get_session(self, user_id: UID) => SSN`
 
 ```
 Return int or string token to correspond as a handler for a session.
@@ -33,21 +33,21 @@ Returning None will most probably invalidate the token.
 
 ### Optional Overrides
 
-#### `get_token_session(self, token:string) => SSN`
+#### `get_token_session(self, token: string) => SSN`
 
 ```
 Returns session from the given token.
 Returning None may cause errors.
 ```
 
-#### `check_token_payload_session(self, payload:dict) => boolean`
+#### `check_token_payload_session(self, payload: dict) => boolean`
 
 ```
 Returns True after passing all checks, otherwises raises.
 Returning False will cause a validation error.
 ```
 
-#### `create_token_payload_session(self, payload:dict, session:SSN) => dict`
+#### `create_token_payload_session(self, payload: dict, session: SSN) => dict`
 
 ```
 Returns payload dictionary after injecting the session.
@@ -59,14 +59,14 @@ Returns payload dictionary after injecting the session.
 
 > Note that these functions bind over methods that `AuthTokenFlowBase` expose to enable the methods implemented by `AuthTokenSessionsBase` to function.
 
-#### `check_token_payload(self, payload:dict) => boolean`
+#### `check_token_payload(self, payload: dict) => boolean`
 
 ```
 Modular override that binds over AuthFlowBase.check_token_payload.
 Helper override to mount check_token_payload_session to AuthFlowBase.
 ```
 
-#### `create_token_payload(self, user_id:UID) => dict`
+#### `create_token_payload(self, user_id: UID) => dict`
 
 ```
 Modular override that bind over AuthFlowBase.create_token_payload.

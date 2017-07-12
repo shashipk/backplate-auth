@@ -24,9 +24,7 @@ from backplate_auth import create_auth_endpoint
 
 Creates an endpoint that accepts a `POST` request from which it may be parsed any way to return a user id to feature in a returned JWT.
 
-
-
-- `AuthTokenFlow`
+- `AuthTokenFlow: object`
   An class instance which inherits the methods of `AuthTokenFlowBase`.
 - **Returns**
   A preconfigured subclass of `flask_restful.Resource` that handles auth requests.
@@ -43,11 +41,9 @@ from backplate_auth import create_auth_decorator
 
 Creates a decorator that examines a token from the request, by default from a `Authorization` header or a `token` url query parameter, and either denies the request with a `401`, or continues the request response flow with a user object populated in the `g.user` response context.
 
-
-
-- `AuthTokenFlow`
+- `AuthTokenFlow: object`
   An class instance which inherits the methods of `AuthTokenFlowBase`.
-- `whitelist (default = [])`
+- `whitelist?: array<string> (default = [])`
   Disables token authentication for certain endpoints by referenced by name.
 - **Returns**
   A preconfigured decorator for the API that handles enforcing valid JWTs.
@@ -89,8 +85,6 @@ from backplate_auth.helpers import backplate_auth_errordefs
 ```
 
 Using `backplate`'s error handling framework, simply adding `backplate_auth_errordefs` to the `create_api`'s `errors` argument can resolve any exceptions arising from token validation and associated exceptions.
-
-
 
 ```python
 errors = []

@@ -1,38 +1,31 @@
 # Backplate Auth
 
-A token auth extension library for `backplate`, integrating JWTs easily into your API.
+Seamlessly integrate authentication JWTs for stateless, (or revokable tokens with sessions) into your API with Backplate's authentication extension library.
 
-Useful for quickly creating a sturdy authentication token flow for any Flask RESTful API.
+```bash
+$ pip install backplate-auth
+```
 
-- Creates an endpoint that accepts a `POST` request from which it may be parsed any way to return a user id to feature in a returned JWT.
-- Creates a decorator that examines a token from the request, by default from a `Authorization` header or a `token` url query parameter, and either denies the request with a `401`, or continues the request response flow with a user object populated in the `g.user` response context.
-- The entire flow is highly customisable and multiple flows can be created and applied.
-- Includes helpers for making revokable JWTs with a sessions class base.
+## Features
 
-
+- Sleek renewable token flow for sustained logins.
+- Database agnostic auth flow method classes for subclassing.
+- Remotely revokable tokens with helper session auth flow method classes.
+- Highly customisable with sensible defaults.
+- Allows for multiple authentication flow implementations.
+- Complete endpoint and decorator generators.
+- Error handling helpers for binding with `backplate`.
 
 - [Documentation](https://github.com/studioarmix/backplate-auth/tree/master/docs)
+- [Example Project App (Source)](https://github.com/studioarmix/backplate-auth/tree/master/example)
 
+## Concept
+1. Creates an endpoint that accepts a `POST` request from which it may be parsed any way to return a user id to feature in a returned JWT.
+1. Creates a decorator that examines a token from the request, by default from a `Authorization` header or a `token` url query parameter, and either denies the request with a `401`, or continues the request response flow with a user object populated in the `g.user` response context.
 
-- [Example Project App](https://github.com/studioarmix/backplate-auth/tree/master/example)
+## Quickstart
 
-
-
-## Usage
-
-### Configuration
-
-Creating a JWT requires a `secret` and an `expiry` value, which can be set through config variables passed to your `Flask` app instance's `config` structure, accessed through `current_app.config`.
-
-#### `SECRET_KEY`
-
-A string used for signing the token's signature, defaults to `'secret'`.
-
-#### `AUTH_TOKEN_LIFE`
-
-A `datetime.timedelta` object used to expire the token, defaults to `weeks=1`.
-
-
+Creating a simple Flask-based API app prefixed with `/v1` with a renewable JWT token authentication flow.
 
 ### Endpoint and Decorator
 
@@ -157,6 +150,21 @@ app = create_api(
 
 
 
+### Configuration
+
+Creating a JWT requires a `secret` and an `expiry` value, which can be set through config variables passed to your `Flask` app instance's `config` structure, accessed through `current_app.config`.
+
+#### `SECRET_KEY`
+
+A string used for signing the token's signature, defaults to `'secret'`.
+
+#### `AUTH_TOKEN_LIFE`
+
+A `datetime.timedelta` object used to expire the token, defaults to `weeks=1`.
+
+
+
+
 ### Sessions (Revokable JWTs)
 
 In the case that you would like to make your issued JWTs revokable, `backplate-auth`  also offers an `AuthTokenSessionsBase` class that binds over your `AuthTokenFlowBase` flow class which similarly requires some methods to be implemented, otherwise they will throw a `NotImplementedError`.
@@ -164,7 +172,7 @@ In the case that you would like to make your issued JWTs revokable, `backplate-a
 ```python
 class AuthTokenSessions(AuthTokenSessionsBase):
     # ... session handling specific overrides
-    
+
 class AuthTokenFlow(AuthTokenSessions, AuthTokenFlowBase):
     # ... general handling specific overrides
 
