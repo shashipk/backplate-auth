@@ -1,13 +1,13 @@
 
-from backplate import errordef
+from backplate import Error
 from backplate_auth.exceptions import (
     AuthAccessError,
     AuthValidationError,
 )
 
 backplate_auth_errordefs = [
-    errordef('AUTH_INVALID_TOKEN', 401, exception=AuthAccessError),
-    errordef('AUTH_MALFORMED_TOKEN', 422, exception=AuthValidationError),
+    Error(AuthAccessError, 401, code='AUTH_INVALID_TOKEN'),
+    Error(AuthValidationError, 422, code='AUTH_MALFORMED_TOKEN'),
 ]
 
 __all__ = [

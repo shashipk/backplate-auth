@@ -44,7 +44,7 @@ class JWT:
 
         if not token:
             raise jwt.exceptions.InvalidTokenError(
-                "A valid token is required.")
+                "No token provided.")
 
         try:
             return jwt.decode(token, secret, algorithms=['HS256'])
